@@ -1,0 +1,11 @@
+---
+region: ""
+vpc_id: ""
+vpc_cidr_ip: 10.1.0.0/16
+loadbalancer_public_subnet: ""
+webserver_private_subnet: ""
+image_id: ""
+key_name: ""
+controller_public_subnet: ""
+database_private_subnet: ""
+prepend_name: ""

@@ -1,0 +1,66 @@
+---
+- hosts: localhost
+
+  tasks:
+  - name: get controller internal DNS, written to hosts file
+    shell: cat "{{playbook_dir}}/controller"
+    register: controller
+
+  - name: set the controller private fqdn
+    set_fact:
+      controller_dns: "{{controller.stdout_lines[1]}}"
+
+  - debug:
+      var: controller_dns
+
+
+- hosts: loadbalancers
+  remote_user: ubuntu
+  become: true
+  become_method: sudo
+  gather_facts: yes
+
+  tasks:
+  - name: install minimal support for python2 for Agent install script
+    apt: 
+      name: "{{ packages }}"
+      state: present
+      update_cache: yes
+    vars:
+      packages:
+      - python-minimal
+
+  - name: Get controller api key
+    uri:
+      url: "https://{{hostvars['localhost']['controller_dns']}}/sapi/auth/login/"
+      method: "POST"
+      body:
+        state:
+        email: "{{controller_user_email}}"
+        password: "{{controller_password}}"
+      body_format: json
+      return_content: yes
+      status_code: 200
+      validate_certs: false
+    register: controller_return
+
+  - name: Copy auth_token to a variable
+    set_fact:
+      api_key: "{{controller_return.json.api_key}}"
+
+  - name: download the installer script from controller
+    get_url:
+      url: "https://{{hostvars['localhost']['controller_dns']}}:8443/1.4/install/controller/"
+      dest: /home/ubuntu/install.sh
+      validate_certs: no
+      force: yes
+    register: controller_return
+
+  - name: run the Controller Agent installer
+    shell: "API_KEY={{api_key}} sh ./install.sh"
+    args:
+      chdir: /home/ubuntu
+    register: agent_install
+
+  - debug:
+      var: agent_install.stdout_lines

@@ -1,0 +1,158 @@
+---
+# this was developed against Ubuntu 18.04
+- hosts: dbserver
+  remote_user: ubuntu
+  become: true
+  become_method: sudo 
+
+  tasks:
+  - name: "add postgresql apt-key"
+    apt_key:
+      url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
+      state: present
+      
+  - name: "add postgresql repository"
+    apt_repository:
+      repo: "deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main"
+      state: present
+      filename: postgresql
+      update_cache: yes
+
+  - name: "Upgrade all existing packages"
+    apt: 
+      update_cache: yes 
+      upgrade: yes
+      # cache_valid_time: 3600
+
+  - name: "Working around apt bug"
+    apt:
+      name: aptitude
+      state: latest
+
+  - name: "Ensure bash, OpenSSl, and libssl are the latest versions"
+    apt: 
+      name: "{{ packages }}"
+      state: present
+    vars:
+      packages:
+        - bash
+        - openssl
+        - libssl-dev
+        - libssl-doc
+        - python-apt
+        - python-psycopg2
+    tags: packages
+
+  - name: "Working around locale issue"
+    apt:
+      name: language-pack-en
+      state: present
+
+  - name: "ensure locale exists"
+    locale_gen:
+      name: en_US.UTF-8
+      state: present
+
+  - name: Install PostgreSQL
+    apt:
+      name: "{{ packages }}"
+      state: present
+      update_cache: yes
+    vars:
+      packages:
+        - postgresql-9.5 
+        - postgresql-contrib-9.5
+        - libpq-dev
+    tags: packages
+
+  - name: Ensure the PostgreSQL service is running
+    service: 
+      name: postgresql
+      state: started
+      enabled: yes
+
+  # this always fails first try and succeeds second. so retry.
+  - name: test postgresql version
+    sudo_user: postgres
+    postgresql_query:
+      db: postgres
+      query: SELECT version()
+    register: postgre
+    until: (postgre is defined )
+    retries: 5
+    delay: 2
+
+  - set_fact: 
+      postgrever: "{{postgre.query_result}}"
+
+  - debug: 
+      var: postgrever[0].version
+
+  - name: Ensure database is created
+    sudo_user: postgres
+    postgresql_db: 
+      name: naas
+      encoding: UTF-8
+      lc_collate: en_US.UTF-8
+      lc_ctype: en_US.UTF-8
+      template: template0
+      state: present
+
+  - name: Ensure user has access to the database
+    sudo_user: postgres
+    postgresql_user:
+      db: naas
+      name: naas
+      password: 'K33p0ut'  # issue with special characters being passed
+      priv: ALL
+      state: present
+
+  - name: Ensure user does not have unnecessary privileges
+    sudo_user: postgres
+    postgresql_user:
+      name: naas
+      role_attr_flags: NOSUPERUSER,CREATEDB
+      state: present
+
+  - name: enable access from any source
+    lineinfile:
+      dest: /etc/postgresql/9.5/main/pg_hba.conf
+      line: host all all 0.0.0.0/0 md5
+      insertafter: EOF
+      state: present
+
+  # - name: postgre allowed
+  #   shell: cat /etc/postgresql/9.5/main/pg_hba.conf
+  #   register: hbaconf
+
+  # - debug:
+  #     var: hbaconf
+
+  - name: enable any interface
+    lineinfile:
+      dest: /etc/postgresql/9.5/main/postgresql.conf
+      line: listen_addresses='*'
+      insertafter: EOF
+      state: present
+
+  # - name: postgre conf
+  #   shell: cat /etc/postgresql/9.5/main/postgresql.conf
+  #   register: postgreconf
+
+  # - debug:
+  #     var: postgreconf
+
+  # - name: postgre listening
+  #   shell: netstat -nlt
+  #   register: postgrelisten
+
+  # - debug:
+  #     var: postgrelisten
+
+  # - name: tweak firewall
+  #   shell: ufw allow 5432/tcp
+
+  - name: restart postgresql
+    service:
+      name: postgresql
+      state: restarted

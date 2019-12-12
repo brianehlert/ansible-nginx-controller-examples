@@ -1,30 +1,27 @@
 ---
-ansible_become_password: 'K33p0ut'
+ansible_become_password: ''
 ctrl_tarball_src: "/home/ubuntu/{{controller_tarball}}"
 ctrl_install_path: /home/ubuntu
 remote_src: yes
 # - db_host: 
 db_port: "5432"
 db_user: "naas"
-db_password: 'K33p0ut'  # issue with special characters
+db_password: ''  # issue with special characters
 tsdb_volume_type: "local"
 smtp_host: "localhost"
 smtp_port: "25"
 smtp_authentication: false
 smtp_use_tls: false
-noreply_address: "noreply@itproctology.com"
+noreply_address: ""
 # - fqdn: 
-organization_name: "ITProctology"
-admin_firstname: "Brian"
-admin_lastname: "Ehlert"
-admin_email: "brian@itproctology.com"
-admin_password: '36x4esg8'
+organization_name: ""
+admin_firstname: ""
+admin_lastname: ""
+admin_email: ""
+admin_password: ''
 self_signed_cert: true
 overwrite_existing_configs: true
 auto_install_docker: false
-# controller_tarball: "controller-installer-2.7.3.tar.gz"
-# controller_tarball: "controller-installer-2.8.1.tar.gz"
-# controller_tarball: "controller-installer-2.9.0.tar.gz"
-controller_tarball: "offline-controller-installer-1143954.tar.gz"
+controller_tarball: "controller-installer-2.9.0.tar.gz"
 
 ansible_python_interpreter: /usr/bin/python3

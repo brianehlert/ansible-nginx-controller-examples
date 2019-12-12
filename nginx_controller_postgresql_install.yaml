@@ -103,7 +103,7 @@
     postgresql_user:
       db: naas
       name: naas
-      password: 'K33p0ut'  # issue with special characters being passed
+      password: "{{ db_password }}"  # issue with special characters being passed
       priv: ALL
       state: present
 

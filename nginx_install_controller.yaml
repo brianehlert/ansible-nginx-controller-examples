@@ -29,7 +29,7 @@
       echo: yes
       command: /bin/bash -c "mkpasswd --method=sha-512 | sed 's/\$/\\$/g'"
       responses:
-        (?i)password: 'K33p0ut'
+        (?i)password: "{{su_password}}"
     register: password_hash
 
 ## on the remote host

@@ -1,11 +1,34 @@
 ---
 # this was developed against Ubuntu 18.04
+# ansible-playbook nginx_controller_postgresql_install.yaml -i dbserver -e "db_password=mySecureString"
+
 - hosts: dbserver
   remote_user: ubuntu
   become: true
   become_method: sudo 
 
   tasks:
+  - name: "Working around apt bug"
+    apt:
+      name: aptitude
+      state: latest
+      update_cache: yes
+
+  - name: "Ensure bash, OpenSSl, and libssl are the latest versions"
+    apt: 
+      name: "{{ packages }}"
+      state: present
+    vars:
+      packages:
+        - bash
+        - openssl
+        - libssl-dev
+        - libssl-doc
+        - python-apt
+        - python-psycopg2
+        - python-minimal
+    tags: packages
+
   - name: "add postgresql apt-key"
     apt_key:
       url: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
@@ -20,28 +43,9 @@
 
   - name: "Upgrade all existing packages"
     apt: 
-      update_cache: yes 
+      # update_cache: yes 
       upgrade: yes
       # cache_valid_time: 3600
-
-  - name: "Working around apt bug"
-    apt:
-      name: aptitude
-      state: latest
-
-  - name: "Ensure bash, OpenSSl, and libssl are the latest versions"
-    apt: 
-      name: "{{ packages }}"
-      state: present
-    vars:
-      packages:
-        - bash
-        - openssl
-        - libssl-dev
-        - libssl-doc
-        - python-apt
-        - python-psycopg2
-    tags: packages
 
   - name: "Working around locale issue"
     apt:

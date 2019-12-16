@@ -45,9 +45,6 @@
       validate_certs: false
     register: auth
 
-  # - debug:
-  #     var: auth
-
   - name: Get controller api key
     uri:
       url: "https://{{hostvars['localhost']['controller_dns']}}/api/v1/platform/global"
@@ -58,9 +55,6 @@
       headers:
         Cookie: "{{auth.set_cookie}}"
     register: ctrl_globals
-
-  # - debug: 
-  #     var: ctrl_globals
 
   - name: Copy auth_token to a variable
     set_fact:

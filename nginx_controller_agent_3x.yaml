@@ -1,4 +1,6 @@
 ---
+# ansible-playbook nginx_controller_agent.yaml -i loadbalancers -e "controller_user_email=user@company.com controller_password=userPassword" 
+
 - hosts: localhost
 
   tasks:

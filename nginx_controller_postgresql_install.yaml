@@ -25,8 +25,6 @@
         - libssl-dev
         - libssl-doc
         - python-apt
-        - python-psycopg2
-        - python-minimal
     tags: packages
 
   - name: "add postgresql apt-key"
@@ -67,6 +65,7 @@
         - postgresql-9.5 
         - postgresql-contrib-9.5
         - libpq-dev
+        - python-psycopg2
     tags: packages
 
   - name: Ensure the PostgreSQL service is running
@@ -75,7 +74,10 @@
       state: started
       enabled: yes
 
-  # this always fails first try and succeeds second. so retry.
+  - name: wait a minute for PostgreSQL to get running
+    pause:
+      minutes: 1
+
   - name: test postgresql version
     sudo_user: postgres
     postgresql_query:

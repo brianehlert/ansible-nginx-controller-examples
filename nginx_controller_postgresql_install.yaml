@@ -25,6 +25,8 @@
         - libssl-dev
         - libssl-doc
         - python-apt
+        - libpq-dev
+        - python-psycopg2
     tags: packages
 
   - name: "add postgresql apt-key"
@@ -39,11 +41,11 @@
       filename: postgresql
       update_cache: yes
 
-  - name: "Upgrade all existing packages"
-    apt: 
-      # update_cache: yes 
-      upgrade: yes
-      # cache_valid_time: 3600
+  # - name: "Upgrade all existing packages"
+  #   apt: 
+  #     update_cache: yes 
+  #     upgrade: yes
+  #     # cache_valid_time: 3600
 
   - name: "Working around locale issue"
     apt:
@@ -64,8 +66,6 @@
       packages:
         - postgresql-9.5 
         - postgresql-contrib-9.5
-        - libpq-dev
-        - python-psycopg2
     tags: packages
 
   - name: Ensure the PostgreSQL service is running

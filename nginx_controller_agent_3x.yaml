@@ -32,6 +32,18 @@
       packages:
       - python-minimal
 
+  - name: COPY stub_status.conf /etc/nginx/conf.d/
+    copy:
+      src: "{{playbook_dir}}/stub_status.conf"
+      dest: "/etc/nginx/conf.d/stub_status.conf"
+      force: yes
+
+  - name: COPY nginx-plus-api.conf /etc/nginx/conf.d/
+    copy:
+      src: "{{playbook_dir}}/nginx-plus-api.conf"
+      dest: "/etc/nginx/conf.d/nginx-plus-api.conf"
+      force: yes
+
   - name: login to Controller
     uri:
       url: "https://{{hostvars['localhost']['controller_dns']}}/api/v1/platform/login"
@@ -78,3 +90,8 @@
 
   - debug:
       var: agent_install.stdout_lines
+
+  - name: restart nginx
+    service:
+      name=nginx
+      state=restarted

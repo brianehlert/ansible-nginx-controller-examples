@@ -286,7 +286,7 @@
       db_host: "{{hostvars['localhost']['dbserver']}}"
 
   roles:
-    - nginx-controller-install
+    - ansible-role-nginx-controller-install
         
 # pull the install log
 - hosts: controller

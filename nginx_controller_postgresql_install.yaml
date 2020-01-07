@@ -18,6 +18,7 @@
     apt: 
       name: "{{ packages }}"
       state: present
+      update_cache: yes
     vars:
       packages:
         - bash
@@ -84,7 +85,7 @@
       db: postgres
       query: SELECT version()
     register: postgre
-    until: (postgre is defined )
+    until: (postgre is defined)
     retries: 5
     delay: 2
 

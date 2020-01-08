@@ -32,6 +32,7 @@
       packages:
       - python-minimal
 
+  # enable full nginx plus metrics
   - name: COPY stub_status.conf /etc/nginx/conf.d/
     copy:
       src: "{{playbook_dir}}/stub_status.conf"

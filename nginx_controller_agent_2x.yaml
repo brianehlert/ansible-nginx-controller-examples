@@ -30,12 +30,14 @@
       packages:
       - python-minimal
 
+  # https://www.nginx.com/blog/monitoring-nginx/
   - name: COPY stub_status.conf /etc/nginx/conf.d/
     copy:
       src: "{{playbook_dir}}/stub_status.conf"
       dest: "/etc/nginx/conf.d/stub_status.conf"
       force: yes
 
+  # necessary for process monitoring.
   - name: COPY nginx-plus-api.conf /etc/nginx/conf.d/
     copy:
       src: "{{playbook_dir}}/nginx-plus-api.conf"

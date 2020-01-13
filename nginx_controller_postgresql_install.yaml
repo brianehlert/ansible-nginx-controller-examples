@@ -77,7 +77,7 @@
 
   - name: wait a minute for PostgreSQL to get running
     pause:
-      minutes: 1
+      seconds: 30
 
   - name: test postgresql version
     sudo_user: postgres

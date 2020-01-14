@@ -1,0 +1,22 @@
+---
+# # for some reason this does not work with the Jinja template
+- hosts: localhost
+
+  tasks:
+- hosts: loadbalancers
+  remote_user: ubuntu
+  become: true
+
+  pre_tasks:
+  - name: load the vars
+    include_vars: 
+      file: "{{playbook_dir}}/3_nginx_plus_vars.yaml"
+
+  roles:
+    - ansible-role-nginx
+
+  # post_tasks:
+  # - name: restart nginx
+  #   service:
+  #     name=nginx
+  #     state=restarted

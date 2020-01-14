@@ -7,7 +7,7 @@
   - name: get controller instance
     ec2_instance_facts:
       filters: 
-        "tag:Name": ansible-controller*
+        "tag:Name": "*controller*"
         instance-state-name: running
     register: controllerinst
 

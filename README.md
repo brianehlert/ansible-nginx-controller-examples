@@ -17,6 +17,7 @@ note: all playbooks tested with Ubuntu 18.04 minimum AMI image
 `ansible-playbook nginx_controller_postgresl_install.yaml -i dbserver`
 
 - installs PostgreSQL, naas user, naas database
+- for some reason unclear to me at this time, this needs to be run a second time to overcome a failure
 
 `ansible-playbook nginx_install_controller.yaml -i controller`
 

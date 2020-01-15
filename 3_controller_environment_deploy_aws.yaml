@@ -155,6 +155,34 @@
           assign_public_ip: true
       register: lbmachine2
 
+    - name: Create LB machine instance
+      ec2_instance:
+        name: "prod-nginx-3"
+        instance_type: t3a.micro
+        security_group: loadbalancer-sg
+        image_id: "{{image_id}}"
+        key_name: "{{key_name}}"
+        region: "{{region}}"
+        vpc_subnet_id: "{{loadbalancer_public_subnet}}"
+        wait: yes
+        network:
+          assign_public_ip: true
+      register: lbmachine3
+
+    - name: Create LB machine instance
+      ec2_instance:
+        name: "prod-nginx-4"
+        instance_type: t3a.micro
+        security_group: loadbalancer-sg
+        image_id: "{{image_id}}"
+        key_name: "{{key_name}}"
+        region: "{{region}}"
+        vpc_subnet_id: "{{loadbalancer_public_subnet}}"
+        wait: yes
+        network:
+          assign_public_ip: true
+      register: lbmachine4
+
     - name: Create devportal machine instance
       ec2_instance:
         name: "prod-nginx-devportal-1"
@@ -167,7 +195,35 @@
         wait: yes
         network:
           assign_public_ip: true
-      register: lbmachine3
+      register: lbmachine5
+
+    - name: Create LB machine instance
+      ec2_instance:
+        name: "dev-nginx-1"
+        instance_type: t3a.micro
+        security_group: loadbalancer-sg
+        image_id: "{{image_id}}"
+        key_name: "{{key_name}}"
+        region: "{{region}}"
+        vpc_subnet_id: "{{loadbalancer_public_subnet}}"
+        wait: yes
+        network:
+          assign_public_ip: true
+      register: lbmachine6
+
+    - name: Create devportal machine instance
+      ec2_instance:
+        name: "dev-nginx-devportal-1"
+        instance_type: t3a.micro
+        security_group: loadbalancer-sg
+        image_id: "{{image_id}}"
+        key_name: "{{key_name}}"
+        region: "{{region}}"
+        vpc_subnet_id: "{{loadbalancer_public_subnet}}"
+        wait: yes
+        network:
+          assign_public_ip: true
+      register: lbmachine7
 
     - name: create loadbalancers host file
       lineinfile:
@@ -193,6 +249,34 @@
       lineinfile:
         dest: "{{playbook_dir}}/loadbalancers"
         line: "{{lbmachine3.instances[0].private_dns_name}}"
+        insertafter: EOF
+        state: present
+
+    - name: add lbmachine4 to loadbalancers host file
+      lineinfile:
+        dest: "{{playbook_dir}}/loadbalancers"
+        line: "{{lbmachine4.instances[0].private_dns_name}}"
+        insertafter: EOF
+        state: present
+
+    - name: add lbmachine5 to loadbalancers host file
+      lineinfile:
+        dest: "{{playbook_dir}}/loadbalancers"
+        line: "{{lbmachine5.instances[0].private_dns_name}}"
+        insertafter: EOF
+        state: present
+
+    - name: add lbmachine6 to loadbalancers host file
+      lineinfile:
+        dest: "{{playbook_dir}}/loadbalancers"
+        line: "{{lbmachine6.instances[0].private_dns_name}}"
+        insertafter: EOF
+        state: present
+
+    - name: add lbmachine7 to loadbalancers host file
+      lineinfile:
+        dest: "{{playbook_dir}}/loadbalancers"
+        line: "{{lbmachine7.instances[0].private_dns_name}}"
         insertafter: EOF
         state: present
 

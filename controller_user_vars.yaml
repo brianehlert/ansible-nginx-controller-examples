@@ -1,0 +1,20 @@
+---
+users:
+  -
+    email: "ken@acmefinancial.net"
+    firstname: "Ken"
+    lastname: "Bocchino"
+    password: "Admin123!@#"
+    roles: "admin"
+  -
+    email: "robert@acmefinancial.net"
+    firstname: "Robert"
+    lastname: "Teller"
+    password: "Admin123!@#"
+    roles: "admin"
+  -
+    email: "president@acmefinancial.net"
+    fristname: "president"
+    lastname: ""
+    password: "Admin123!@#"
+    roles: "guest"

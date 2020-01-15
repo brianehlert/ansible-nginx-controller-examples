@@ -80,7 +80,8 @@
       seconds: 30
 
   - name: test postgresql version
-    sudo_user: postgres
+    become: true
+    become_user: postgres
     postgresql_query:
       db: postgres
       query: SELECT version()
@@ -96,7 +97,8 @@
       var: postgrever[0].version
 
   - name: Ensure database is created
-    sudo_user: postgres
+    become: true
+    become_user: postgres
     postgresql_db: 
       name: naas
       encoding: UTF-8
@@ -106,7 +108,8 @@
       state: present
 
   - name: Ensure user has access to the database
-    sudo_user: postgres
+    become: true
+    become_user: postgres
     postgresql_user:
       db: naas
       name: naas
@@ -115,7 +118,8 @@
       state: present
 
   - name: Ensure user does not have unnecessary privileges
-    sudo_user: postgres
+    become: true
+    become_user: postgres
     postgresql_user:
       name: naas
       role_attr_flags: NOSUPERUSER,CREATEDB

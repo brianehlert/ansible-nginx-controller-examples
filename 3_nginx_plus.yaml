@@ -13,7 +13,7 @@
       file: "{{playbook_dir}}/3_nginx_plus_vars.yaml"
 
   roles:
-    - ansible-role-nginx
+    - nginxinc.nginx
 
   # post_tasks:
   # - name: restart nginx

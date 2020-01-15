@@ -1,9 +1,9 @@
 ---
-ansible_become_password: ''
+su_password: ''
 ctrl_tarball_src: "/home/ubuntu/{{controller_tarball}}"
 ctrl_install_path: /home/ubuntu
 remote_src: yes
-# - db_host: 
+db_host: ""
 db_port: "5432"
 db_user: "naas"
 db_password: ''  # issue with special characters
@@ -13,7 +13,7 @@ smtp_port: "25"
 smtp_authentication: false
 smtp_use_tls: false
 noreply_address: ""
-# - fqdn: 
+fqdn: ""
 organization_name: ""
 admin_firstname: ""
 admin_lastname: ""

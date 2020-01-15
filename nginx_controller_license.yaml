@@ -1,18 +1,6 @@
 ---
-# ansible-playbook nginx_controller_license.yaml -i controller -e "controller_user_email=user@company.com controller_password=userPassword" 
-- hosts: localhost
-
-  tasks:
-  - name: get controller internal DNS, written to inventory file
-    shell: cat "{{playbook_dir}}/controller"
-    register: controller
-
-  - name: set the controller private fqdn
-    set_fact:
-      controller_dns: "{{controller.stdout_lines[1]}}"
-
-  - debug:
-      var: controller_dns
+# ansible-playbook nginx_controller_license.yaml -i controller -e "admin_email=user@company.com admin_password=userPassword" 
+# ansible-playbook nginx_controller_license.yaml -e "@nginx_install_controller_vars.yaml"
 
 - hosts: controller
   remote_user: ubuntu
@@ -27,13 +15,13 @@
   tasks:
   - name: login to Controller
     uri:
-      url: "https://{{hostvars['localhost']['controller_dns']}}/api/v1/platform/login"
+      url: "https://{{fqdn}}/api/v1/platform/login"
       method: "POST"
       body: 
         credentials:
           type: "BASIC"
-          username: "{{controller_user_email}}"
-          password: "{{controller_password}}"
+          username: "{{admin_email}}"
+          password: "{{admin_password}}"
       body_format: json
       return_content: yes
       status_code: 204
@@ -42,7 +30,7 @@
 
   - name: POST controller license
     uri:
-      url: "https://{{hostvars['localhost']['controller_dns']}}/api/v1/platform/license-file"
+      url: "https://{{fqdn}}/api/v1/platform/license-file"
       method: POST
       body: 
         content: "{{ license }}"
@@ -56,7 +44,7 @@
 
   - name: GET controller license status
     uri:
-      url: "https://{{hostvars['localhost']['controller_dns']}}/api/v1/platform/license"
+      url: "https://{{fqdn}}/api/v1/platform/license"
       method: GET
       status_code: 200
       validate_certs: false

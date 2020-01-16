@@ -27,10 +27,6 @@
     shell: apt-cache show docker-ce
     register: docker_versions
 
-  # - name: list
-  #   debug:
-  #     var: docker_versions.stdout_lines
-
   - name: install docker community edition
     apt: 
       name: "{{ packages }}"

@@ -79,7 +79,8 @@
   - debug:
       var: agent_install.stdout_lines
 
-  - name: restart nginx
+  - name: stop controller registration to manually set agent.conf
     service:
-      name=nginx
-      state=restarted
+      name=controller-agent
+      state=stopped
+

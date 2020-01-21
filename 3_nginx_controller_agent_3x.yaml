@@ -9,11 +9,15 @@
   gather_facts: yes
 
   tasks:
+  - name: upgrade packages here.
+    apt: 
+      update_cache: yes
+      upgrade: yes
+
   - name: install minimal support for python2 for Agent install script
     apt: 
       name: "{{ packages }}"
       state: present
-      update_cache: yes
     vars:
       packages:
       - python-minimal
@@ -84,3 +88,10 @@
       name=controller-agent
       state=stopped
 
+  - name: remove nginx plus repo keys (breaks apt-get upgrade), future; use nginx role to remove
+    file:
+      path: {{ item }}
+      state: absent    
+    loop:
+      - /etc/ssl/nginx/nginx-repo.crt
+      - /etc/ssl/nginx/nginx-repo.key

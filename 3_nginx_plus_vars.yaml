@@ -2,7 +2,7 @@
 nginx_enable: true
 nginx_start: true
 nginx_type: plus
-nginx_delete_license: false # this needs to stay in place or agent install will fail later.
+nginx_delete_license: true
 nginx_license: # this is the Ansible host location to copy out
   certificate: "{{playbook_dir}}/license/nginx-repo.crt"
   key: "{{playbook_dir}}/license/nginx-repo.key"

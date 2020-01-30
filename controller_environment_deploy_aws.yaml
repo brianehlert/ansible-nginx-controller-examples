@@ -1,5 +1,6 @@
 ---
 # This depends on a CFT to stand up the VPC with two public and two private subnets
+#  ansible-playbook controller_environment_deploy_aws.yml -e "@controller_aws_vars.yaml"     
 
 - name: deploy nginx instances
   hosts: localhost

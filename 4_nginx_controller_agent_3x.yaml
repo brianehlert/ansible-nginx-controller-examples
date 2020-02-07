@@ -9,10 +9,10 @@
   gather_facts: yes
 
   tasks:
-  - name: upgrade packages here.
-    apt:
-      update_cache: yes
-      upgrade: yes
+  # - name: upgrade packages here.
+  #   apt:
+  #     update_cache: yes
+  #     upgrade: yes
 
   - name: install minimal support for python2 for Agent install script
     apt:

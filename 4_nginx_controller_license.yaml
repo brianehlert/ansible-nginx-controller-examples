@@ -1,7 +1,7 @@
 # ansible-playbook nginx_controller_license.yaml -i controller -e "admin_email=user@company.com admin_password=userPassword" 
 # ansible-playbook nginx_controller_license.yaml -e "@nginx_install_controller_vars.yaml"
 
-- hosts: controller
+- hosts: localhost
   gather_facts: no
 
   vars:

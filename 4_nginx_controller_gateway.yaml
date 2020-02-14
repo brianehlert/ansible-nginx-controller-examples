@@ -1,0 +1,43 @@
+# ansible-playbook nginx_controller_gateway.yaml -e "admin_email=user@company.com admin_password=userPassword" 
+# ansible-playbook nginx_controller_gateway.yaml -e "@nginx_install_controller_vars.yaml"
+
+- hosts: localhost
+  gather_facts: no
+
+  tasks:
+  - include_role:
+      name: nginx-controller-generate-token
+    vars:
+      user_email: "user@example.com"
+      user_password: 'secure_password'
+      controller_fqdn: "controller.example.local"
+
+  - name: install the agent
+    include_role:
+      name: nginx-controller-gateway
+    vars:
+      environment_name: "production-us-west"
+      gateway:
+        name: lending
+        displayName: "Shared Public Lending BU Gateway"
+        description: "Routes all non special Lending applications"
+        tags:
+        - production
+        - us-west
+        - lending
+      ingress:
+        uris:
+        - "http://mortgage.acmefinancial.net"
+        - "https://mortgage.acmefinancial.net"
+        - "http://ratecalculator.acmefinancial.net"
+        - "https://ratecalculator.acmefinancial.net"
+        tls:
+          certRef:
+            ref: "/services/environments/lending-prod/certs/star.acmefinancial.net"
+          protocols:
+          - "TLSv1.3"
+          - "TLSv1.2"
+        placement:
+          instanceRefs:
+          - "/infrastructure/locations/unspecified/instances/2"
+          - "/infrastructure/locations/unspecified/instances/4"

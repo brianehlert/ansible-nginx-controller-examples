@@ -21,14 +21,10 @@
     vars:
       packages:
       - python-minimal
+      - libxerces-c3.2
 
   - include_role:
-      # name: nginxinc.nginx-controller-generate-token
       name: ansible-role-nginx-controller-generate-token
-    # vars:
-    #   user_email: "user@example.com"
-    #   user_password: 'secure_password'
-    #   controller_fqdn: ""
 
   - name: Get controller api key for agent registration
     uri:
@@ -47,8 +43,4 @@
 
   - name: install the agent
     include_role:
-      # name: nginxinc.nginx-controller-agent
       name: ansible-role-nginx-controller-agent
-    # vars:
-    #   controller_fqdn:
-    #   api_key:

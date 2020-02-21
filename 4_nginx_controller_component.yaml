@@ -1,0 +1,61 @@
+# ansible-playbook nginx_controller_gateway.yaml -e "user_email=brian@itproctology.com user_password=36x4esg8 controller_fqdn=ip-10-1-10-25.us-east-2.compute.internal" 
+# ansible-playbook nginx_controller_gateway.yaml -e "@nginx_install_controller_vars.yaml"
+
+- hosts: localhost
+  gather_facts: no
+
+  tasks:
+  - include_role:
+      name: ansible-role-nginx-controller-generate-token
+
+  - name: configure the component
+    include_role:
+      name: ansible-role-nginx-controller-component
+    vars:
+      # controller_fqdn:
+      appName: "testapp"
+      environmentName: "production-us-west"
+      component:
+        metadata: 
+          name: lending
+          displayName: "Shared Public Lending BU Gateway"
+          description: "Routes all non special Lending applications"
+        desiredState:  
+          ingress:
+            uris:
+              "/":
+                {} # use defaults
+              "/jokes/random":
+                {} # use defaults
+            gatewayRefs:
+              - ref: "/services/environments/production-us-west/gateways/lending"
+          backend:
+            workloadGroups:
+              group1:
+                uris:
+                  "http://10.1.10.11:8121":
+                    isDown: true
+                  "http://10.1.10.12:8121":
+                    {} # use defaults
+                  "http://10.1.10.11:5821":
+                    {} # use defaults
+                  "http://10.1.10.12:5821":
+                    {} # use defaults
+                loadBalancingMethod: 
+                  type: ROUND_ROBIN
+              group2:
+                uris:
+                  "http://10.1.10.12:8121":
+                    {} # use defaults
+                  "http://10.1.10.11:5821":
+                    {} # use defaults
+                  "http://10.1.10.12:5821":
+                    {} # use defaults
+            monitoring:
+              response:
+                status:
+                  range:
+                    startCode: 200
+                    endCode: 201
+                  match: true
+

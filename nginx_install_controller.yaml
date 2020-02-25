@@ -5,7 +5,7 @@
 
   tasks:
   - name: get controller instance
-    ec2_instance_facts:
+    ec2_instance_info:
       filters: 
         "tag:Name": "*controller*"
         instance-state-name: running

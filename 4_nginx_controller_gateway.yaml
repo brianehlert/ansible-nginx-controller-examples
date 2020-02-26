@@ -13,7 +13,7 @@
       name: ansible-role-nginx-controller-gateway
     vars:
         controller_fqdn: "controller.example.local"
-        environment_name: "production-us-west"
+        environmentName: "production-us-west"
         gateway:
           metadata:
             name: lending
@@ -28,10 +28,10 @@
                 "https://ratecalculator.acmefinancial.net": {}
               tls:
                 certRef:
-                  ref: "/services/environments/lending-prod/certs/star.acmefinancial.net"
+                  ref: "/services/environments/production-us-west/certs/star.acmefinancial.net"
                 protocols:
                   - "TLSv1.3"
                   - "TLSv1.2"
               placement:
                 instanceRefs:
-                  - ref: "/infrastructure/locations/unspecified/instances/6"
+                  - ref: "/infrastructure/locations/unspecified/instances/2"

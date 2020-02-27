@@ -1,54 +1,18 @@
----
 # ansible-playbook nginx_controller_license.yaml -i controller -e "admin_email=user@company.com admin_password=userPassword" 
 # ansible-playbook nginx_controller_license.yaml -e "@nginx_install_controller_vars.yaml"
 
-- hosts: controller
-  remote_user: ubuntu
-  become: true
-  become_method: sudo
-  gather_facts: yes
+- hosts: localhost
+  gather_facts: no
 
   vars:
     # base64 encoded, one line, no line endings or carrage returns
     license: "{{ lookup('file', 'license/controller_license.base64.txt') }}"
 
   tasks:
-  - name: login to Controller
-    uri:
-      url: "https://{{fqdn}}/api/v1/platform/login"
-      method: "POST"
-      body: 
-        credentials:
-          type: "BASIC"
-          username: "{{admin_email}}"
-          password: "{{admin_password}}"
-      body_format: json
-      return_content: yes
-      status_code: 204
-      validate_certs: false
-    register: auth
+  ## Generate Controller token
+  - include_role:
+      name: ansible-role-nginx-controller-generate-token
 
-  - name: POST controller license
-    uri:
-      url: "https://{{fqdn}}/api/v1/platform/license-file"
-      method: POST
-      body: 
-        content: "{{ license }}"
-      body_format: json
-      return_content: yes
-      status_code: 200
-      validate_certs: false
-      headers:
-        Cookie: "{{auth.set_cookie}}"
-    register: controller_response
-
-  - name: GET controller license status
-    uri:
-      url: "https://{{fqdn}}/api/v1/platform/license"
-      method: GET
-      status_code: 200
-      validate_certs: false
-      headers:
-        Cookie: "{{auth.set_cookie}}"
-    register: controller_license
-
+  ## Upload and test license
+  - include_role:
+      name: ansible-role-nginx-controller-license

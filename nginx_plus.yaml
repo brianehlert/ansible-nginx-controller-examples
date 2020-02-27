@@ -10,7 +10,7 @@
   pre_tasks:
   - name: load the vars
     include_vars: 
-      file: "{{playbook_dir}}/3_nginx_plus_vars.yaml"
+      file: "{{playbook_dir}}/nginx_plus_vars.yaml"
 
   roles:
     - nginxinc.nginx

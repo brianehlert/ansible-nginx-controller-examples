@@ -1,20 +1,6 @@
 ---
-# ansible-playbook nginx_controller_agent.yaml -i loadbalancers -e "controller_user_email=user@company.com controller_password=userPassword" 
-
-- hosts: localhost
-
-  tasks:
-  - name: get controller internal DNS, written to hosts file
-    shell: cat "{{playbook_dir}}/controller"
-    register: controller
-
-  - name: set the controller private fqdn
-    set_fact:
-      controller_dns: "{{controller.stdout_lines[1]}}"
-
-  - debug:
-      var: controller_dns
-
+# ansible-playbook nginx_controller_agent.yaml -i loadbalancers -e "admin_email=user@company.com admin_password=userPassword" 
+# ansible-playbook nginx_controller_agent_3x.yaml -e "@nginx_install_controller_vars.yaml"
 
 - hosts: loadbalancers
   remote_user: ubuntu
@@ -23,77 +9,38 @@
   gather_facts: yes
 
   tasks:
+  # - name: upgrade packages here.
+  #   apt:
+  #     update_cache: yes
+  #     upgrade: yes
+
   - name: install minimal support for python2 for Agent install script
-    apt: 
+    apt:
       name: "{{ packages }}"
       state: present
-      update_cache: yes
     vars:
       packages:
       - python-minimal
+      - libxerces-c3.2
 
-  # https://www.nginx.com/blog/monitoring-nginx/
-  - name: COPY stub_status.conf /etc/nginx/conf.d/
-    copy:
-      src: "{{playbook_dir}}/stub_status.conf"
-      dest: "/etc/nginx/conf.d/stub_status.conf"
-      force: yes
+  - include_role:
+      name: ansible-role-nginx-controller-generate-token
 
-  # necessary for process monitoring.
-  - name: COPY nginx-plus-api.conf /etc/nginx/conf.d/
-    copy:
-      src: "{{playbook_dir}}/nginx-plus-api.conf"
-      dest: "/etc/nginx/conf.d/nginx-plus-api.conf"
-      force: yes
-
-  - name: login to Controller
+  - name: Get controller api key for agent registration
     uri:
-      url: "https://{{hostvars['localhost']['controller_dns']}}/api/v1/platform/login"
-      method: "POST"
-      body: 
-        credentials:
-          type: "BASIC"
-          username: "{{controller_user_email}}"
-          password: "{{controller_password}}"
-      body_format: json
-      return_content: yes
-      status_code: 204
-      validate_certs: false
-    register: auth
-
-  - name: Get controller api key
-    uri:
-      url: "https://{{hostvars['localhost']['controller_dns']}}/api/v1/platform/global"
+      url: "https://{{controller_fqdn}}/api/v1/platform/global"
       method: "GET"
       return_content: yes
       status_code: 200
       validate_certs: false
       headers:
-        Cookie: "{{auth.set_cookie}}"
+        Cookie: "{{controller_auth_token}}"
     register: ctrl_globals
 
-  - name: Copy auth_token to a variable
+  - name: Copy api_key to a variable
     set_fact:
       api_key: "{{ctrl_globals.json.currentStatus.agentSettings.apiKey}}"
 
-  - name: download the installer script from controller
-    get_url:
-      url: "https://{{hostvars['localhost']['controller_dns']}}:8443/1.4/install/controller/"
-      dest: /home/ubuntu/install.sh
-      validate_certs: no
-      force: yes
-    register: controller_return
-
-  - name: run the Controller Agent installer
-    shell: "API_KEY={{api_key}} sh ./install.sh"
-    args:
-      chdir: /home/ubuntu
-    register: agent_install
-
-  - debug:
-      var: agent_install.stdout_lines
-
-  - name: restart nginx
-    service:
-      name=nginx
-      state=restarted
+  - name: install the agent
+    include_role:
+      name: ansible-role-nginx-controller-agent

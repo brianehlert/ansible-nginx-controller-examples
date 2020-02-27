@@ -1,6 +1,5 @@
 ---
 # This depends on a CFT to stand up the VPC with two public and two private subnets
-#  ansible-playbook controller_environment_deploy_aws.yml -e "@controller_aws_vars.yaml"     
 
 - name: deploy nginx instances
   hosts: localhost
@@ -130,7 +129,7 @@
 
     - name: Create LB machine instance
       ec2_instance:
-        name: "{{prepend_name}}-loadBalancer"
+        name: "prod-nginx-1"
         instance_type: t3a.micro
         security_group: loadbalancer-sg
         image_id: "{{image_id}}"
@@ -142,7 +141,90 @@
           assign_public_ip: true
       register: lbmachine
 
- 
+    - name: Create LB machine instance
+      ec2_instance:
+        name: "prod-nginx-2"
+        instance_type: t3a.micro
+        security_group: loadbalancer-sg
+        image_id: "{{image_id}}"
+        key_name: "{{key_name}}"
+        region: "{{region}}"
+        vpc_subnet_id: "{{loadbalancer_public_subnet}}"
+        wait: yes
+        network:
+          assign_public_ip: true
+      register: lbmachine2
+
+    - name: Create LB machine instance
+      ec2_instance:
+        name: "prod-nginx-3"
+        instance_type: t3a.micro
+        security_group: loadbalancer-sg
+        image_id: "{{image_id}}"
+        key_name: "{{key_name}}"
+        region: "{{region}}"
+        vpc_subnet_id: "{{loadbalancer_public_subnet}}"
+        wait: yes
+        network:
+          assign_public_ip: true
+      register: lbmachine3
+
+    - name: Create LB machine instance
+      ec2_instance:
+        name: "prod-nginx-4"
+        instance_type: t3a.micro
+        security_group: loadbalancer-sg
+        image_id: "{{image_id}}"
+        key_name: "{{key_name}}"
+        region: "{{region}}"
+        vpc_subnet_id: "{{loadbalancer_public_subnet}}"
+        wait: yes
+        network:
+          assign_public_ip: true
+      register: lbmachine4
+
+    - name: Create devportal machine instance
+      ec2_instance:
+        name: "prod-nginx-devportal-1"
+        instance_type: t3a.micro
+        security_group: loadbalancer-sg
+        image_id: "{{image_id}}"
+        key_name: "{{key_name}}"
+        region: "{{region}}"
+        vpc_subnet_id: "{{loadbalancer_public_subnet}}"
+        wait: yes
+        network:
+          assign_public_ip: true
+      register: lbmachine5
+
+    - name: Create LB machine instance
+      ec2_instance:
+        name: "dev-nginx-1"
+        instance_type: t3a.micro
+        security_group: loadbalancer-sg
+        image_id: "{{image_id}}"
+        key_name: "{{key_name}}"
+        region: "{{region}}"
+        vpc_subnet_id: "{{loadbalancer_public_subnet}}"
+        wait: yes
+        network:
+          assign_public_ip: true
+      register: lbmachine6
+
+    - name: Create devportal machine instance
+      ec2_instance:
+        name: "dev-nginx-devportal-1"
+        instance_type: t3a.micro
+        security_group: loadbalancer-sg
+        image_id: "{{image_id}}"
+        key_name: "{{key_name}}"
+        region: "{{region}}"
+        vpc_subnet_id: "{{loadbalancer_public_subnet}}"
+        wait: yes
+        network:
+          assign_public_ip: true
+      register: lbmachine7
+
     - name: create loadbalancers host file
       lineinfile:
         dest: "{{playbook_dir}}/loadbalancers"
@@ -156,9 +238,51 @@
         insertafter: EOF
         state: present
 
+    - name: add lbmachine2 to loadbalancers host file
+      lineinfile:
+        dest: "{{playbook_dir}}/loadbalancers"
+        line: "{{lbmachine2.instances[0].private_dns_name}}"
+        insertafter: EOF
+        state: present
+
+    - name: add lbmachine3 to loadbalancers host file
+      lineinfile:
+        dest: "{{playbook_dir}}/loadbalancers"
+        line: "{{lbmachine3.instances[0].private_dns_name}}"
+        insertafter: EOF
+        state: present
+
+    - name: add lbmachine4 to loadbalancers host file
+      lineinfile:
+        dest: "{{playbook_dir}}/loadbalancers"
+        line: "{{lbmachine4.instances[0].private_dns_name}}"
+        insertafter: EOF
+        state: present
+
+    - name: add lbmachine5 to loadbalancers host file
+      lineinfile:
+        dest: "{{playbook_dir}}/loadbalancers"
+        line: "{{lbmachine5.instances[0].private_dns_name}}"
+        insertafter: EOF
+        state: present
+
+    - name: add lbmachine6 to loadbalancers host file
+      lineinfile:
+        dest: "{{playbook_dir}}/loadbalancers"
+        line: "{{lbmachine6.instances[0].private_dns_name}}"
+        insertafter: EOF
+        state: present
+
+    - name: add lbmachine7 to loadbalancers host file
+      lineinfile:
+        dest: "{{playbook_dir}}/loadbalancers"
+        line: "{{lbmachine7.instances[0].private_dns_name}}"
+        insertafter: EOF
+        state: present
+
     - name: Create webserver machine instance(s)
       ec2_instance:
-        name: "{{prepend_name}}-webServer"
+        name: "prod-static-webServer-1"
         instance_type: t3a.micro
         security_group: webserver-sg
         image_id: "{{image_id}}"
@@ -170,7 +294,7 @@
 
     - name: Create webserver2 machine instance(s)
       ec2_instance:
-        name: "{{prepend_name}}-webServer2"
+        name: "prod-static-webServer-2"
         instance_type: t3a.micro
         security_group: webserver-sg
         image_id: "{{image_id}}"
@@ -179,9 +303,6 @@
         vpc_subnet_id: "{{webserver_private_subnet}}"
         wait: yes
       register: webserver2
-
-    # - debug:
-    #     var: webserver
 
     - name: create webservers host file
       lineinfile:
@@ -196,9 +317,6 @@
         insertafter: EOF
         state: present
 
-    # - debug:
-    #     var: webserver2
-
     - name: add webserver2 to webservers host file
       lineinfile:
         dest: "{{playbook_dir}}/webservers"
@@ -208,7 +326,7 @@
 
     - name: Create controller machine instance
       ec2_instance:
-        name: "{{prepend_name}}-controller"
+        name: "nginx-controller-1"
         instance_type: t3a.xlarge
         security_group: controller-sg
         image_id: "{{image_id}}"
@@ -222,9 +340,6 @@
         vpc_subnet_id: "{{controller_public_subnet}}"
         wait: yes
       register: controller
-
-    # - debug:
-    #     var: controller
 
     - name: create controller host file
       lineinfile:
@@ -241,7 +356,7 @@
 
     - name: Create dbserver machine instance(s)
       ec2_instance:
-        name: "{{prepend_name}}-dbServer"
+        name: "postgresql-dbServer-1"
         instance_type: t3a.medium
         security_group: dbserver-sg
         image_id: "{{image_id}}"
@@ -250,9 +365,6 @@
         vpc_subnet_id: "{{database_private_subnet}}"
         wait: yes
       register: dbserver
-
-    # - debug:
-    #     var: dbserver
 
     - name: create dbserver host file
       lineinfile:
@@ -264,5 +376,74 @@
       lineinfile:
         dest: "{{playbook_dir}}/dbserver"
         line: "{{dbserver.instances[0].private_dns_name}}"
+        insertafter: EOF
+        state: present
+
+    - name: Create appContainers1 machine instance(s)
+      ec2_instance:
+        name: "appContainers-1"
+        instance_type: t3a.medium
+        security_group: controller-sg
+        image_id: "{{image_id}}"
+        key_name: "{{key_name}}"
+        region: "{{region}}"
+        vpc_subnet_id: "{{controller_public_subnet}}"
+        wait: yes
+      register: appcontainers1
+
+    - name: Create appContainers2 machine instance(s)
+      ec2_instance:
+        name: "appContainers-2"
+        instance_type: t3a.medium
+        security_group: controller-sg
+        image_id: "{{image_id}}"
+        key_name: "{{key_name}}"
+        region: "{{region}}"
+        vpc_subnet_id: "{{controller_public_subnet}}"
+        wait: yes
+      register: appcontainers2
+
+    - name: create appcontainers host file
+      lineinfile:
+        dest: "{{playbook_dir}}/appcontainers"
+        line: "[appcontainers]"
+        create: yes
+
+    - name: add appcontainers1 to appcontainers host file
+      lineinfile:
+        dest: "{{playbook_dir}}/appcontainers"
+        line: "{{appcontainers1.instances[0].private_dns_name}}"
+        insertafter: EOF
+        state: present
+
+    - name: add appcontainers2 to appcontainers host file
+      lineinfile:
+        dest: "{{playbook_dir}}/appcontainers"
+        line: "{{appcontainers2.instances[0].private_dns_name}}"
+        insertafter: EOF
+        state: present
+
+    - name: Create loadgen machine instance(s)
+      ec2_instance:
+        name: "loadgen-1"
+        instance_type: t3a.small
+        security_group: controller-sg
+        image_id: "{{image_id}}"
+        key_name: "{{key_name}}"
+        region: "{{region}}"
+        vpc_subnet_id: "{{controller_public_subnet}}"
+        wait: yes
+      register: loadgen1
+
+    - name: create loadgen host file
+      lineinfile:
+        dest: "{{playbook_dir}}/loadgen"
+        line: "[loadgen]"
+        create: yes
+
+    - name: add loadgen1 to loadgen host file
+      lineinfile:
+        dest: "{{playbook_dir}}/loadgen"
+        line: "{{loadgen1.instances[0].private_dns_name}}"
         insertafter: EOF
         state: present

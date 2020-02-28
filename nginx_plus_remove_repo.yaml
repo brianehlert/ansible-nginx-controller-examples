@@ -1,0 +1,23 @@
+---
+- hosts: loadbalancers
+  remote_user: ubuntu
+  become: true
+  gather_facts: true
+
+  tasks:
+  - name: "remove NGINX Plus Repository"
+    shell:
+      add-apt-repository --remove "https://plus-pkgs.nginx.com/ubuntu bionic Release"
+
+  - name: "remove files"
+    file:
+      path: "{{item}}"
+      state: absent
+    with_items: 
+      - /etc/apt/sources.list.d/nginx-plus.list
+      - /etc/apt/sources.list.d/nginx-plus.list.save
+
+  - name: "update repository"
+    apt:
+      update_cache: yes
+

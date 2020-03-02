@@ -1,0 +1,21 @@
+---
+- hosts: loadbalancers, dbserver, webservers, appcontainers
+  become: true
+  remote_user: ubuntu
+  gather_facts: true
+
+  tasks:
+  - name: "update | upgrade"
+    apt:
+      upgrade: yes
+      update_cache: yes
+      autoclean: yes
+      autoremove: yes
+    when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+  - name: "update | upgrade"
+    yum:
+      state: latest
+      update_cache: yes
+      autoremove: yes
+    when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'

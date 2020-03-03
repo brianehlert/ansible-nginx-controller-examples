@@ -44,3 +44,18 @@
   - name: install the agent
     include_role:
       name: ansible-role-nginx-controller-agent
+
+  - name: quick fix, remove redundant nginx api conf
+    file:
+      path: "/etc/nginx/conf.d/nginx-plus-api.conf"
+      state: absent
+
+  - name: quick fix, remove redundant stubstatus conf
+    file:
+      path: "/etc/nginx/conf.d/stub_status.conf"
+      state: absent
+
+  - name: Restart NGINX
+    service:
+      name: nginx
+      state: restarted

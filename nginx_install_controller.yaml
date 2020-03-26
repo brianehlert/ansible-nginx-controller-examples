@@ -1,4 +1,5 @@
 ---
+# ansible-playbook nginx_install_controller.yaml -i controller -e "su_password='K33p0ut'"
 ## retreive dynamic settings information at the Ansible Controller
 - hosts: localhost
   gather_facts: false

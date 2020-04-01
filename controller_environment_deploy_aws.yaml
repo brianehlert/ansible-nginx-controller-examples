@@ -5,6 +5,8 @@
   hosts: localhost
   gather_facts: false
   connection: local
+  vars_files:
+    - controller_aws_vars.yaml
 
   tasks:
     - name: Create loadbalancer-sg security group

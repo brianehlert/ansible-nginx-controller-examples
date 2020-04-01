@@ -5,7 +5,9 @@
 - hosts: dbserver
   remote_user: ubuntu
   become: true
-  become_method: sudo 
+  become_method: sudo
+  vars_files:
+    - nginx_install_controller_vars.yaml
 
   tasks:
   - name: "Working around apt bug"

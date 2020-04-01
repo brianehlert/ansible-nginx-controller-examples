@@ -7,6 +7,9 @@
   become: true
   become_method: sudo
   gather_facts: yes
+  vars_files:
+    - nginx_install_controller_vars.yaml
+    - controller_aws_vars.yaml
 
   tasks:
   # - name: upgrade packages here.
@@ -34,7 +37,7 @@
       status_code: 200
       validate_certs: false
       headers:
-        Cookie: "{{controller_auth_token}}"
+        Cookie: "{{controller.auth_token}}"
     register: ctrl_globals
 
   - name: Copy api_key to a variable

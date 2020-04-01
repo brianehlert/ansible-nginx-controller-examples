@@ -1,5 +1,7 @@
 ---
 - hosts: localhost
+  vars_files:
+    - nginx_install_controller_vars.yaml
 
   tasks:
   - name: get controller internal DNS, written to hosts file

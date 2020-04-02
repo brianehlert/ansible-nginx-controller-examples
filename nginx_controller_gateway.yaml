@@ -6,11 +6,11 @@
 
   tasks:
   - include_role:
-      name: ansible-role-nginx-controller-generate-token
+      name: nginxinc.nginx_controller_generate_token
 
   - name: configure the gateway
     include_role:
-      name: ansible-role-nginx-controller-gateway
+      name: nginxinc.nginx_controller_gateway
     vars:
         controller_fqdn: "controller.example.local"
         environmentName: "production-us-west"

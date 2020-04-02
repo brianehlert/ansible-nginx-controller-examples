@@ -6,11 +6,11 @@
 
   tasks:
   - include_role:
-      name: ansible-role-nginx-controller-generate-token
+      name: nginxinc.nginx_controller_generate_token
 
   - name: configure the component
     include_role:
-      name: ansible-role-nginx-controller-component
+      name: nginxinc.nginx_controller_component
     vars:
       # controller_fqdn:
       appName: "testapp"

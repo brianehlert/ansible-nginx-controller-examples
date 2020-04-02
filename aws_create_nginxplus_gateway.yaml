@@ -1,0 +1,26 @@
+---
+# this is a playbook to create X number of NGINX Plus instances for use as Gateway objects in NGINX Controller.
+# this example was developed for use with Ansible Tower.
+
+- name: deploy nginx instances
+  hosts: localhost
+  gather_facts: false
+  connection: local
+
+  tasks:
+    - name: Create public LB machine instance
+      ec2:
+        instance_type: "{{instanceType}}"
+        group: "{{securityGroup}}"
+        image: "{{imageId}}"
+        key_name: "{{keyName}}"
+        region: "{{region}}"
+        vpc_subnet_id: "{{loadbalancerPublicSubnet}}"
+        assign_public_ip: true
+        instance_tags:
+          environment: "{{environmentName}}"
+          location: "{{locationName}}"
+          gateway:
+        wait: false
+        count: "{{count}}"
+        # zone:

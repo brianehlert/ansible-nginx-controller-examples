@@ -1,8 +1,0 @@
----
-collections:
-  # Install a collection from Ansible Galaxy.
-  - name: ansible-collection-nginx_controller
-
-roles:
-  # Install a role from Ansible Galaxy.
-  - name: nginxinc.nginx

@@ -11,8 +11,8 @@ Requirements
 - Python [python-pexpect](https://pexpect.readthedocs.io/en/stable/) package
 
 
-The whats
-------------
+The whats: Deploying Controller
+---------------------------------
 
 note: all playbooks tested with Ubuntu 18.04 minimum AMI image
 
@@ -61,6 +61,31 @@ note: all playbooks tested with Ubuntu 18.04 minimum AMI image
 - for NGINX Controller 3.x family
 - reads controller inventory file
 - requires controller_user_email, controller_password
+
+
+The whats part deaux: Configuring Controller
+----------------------------------------------
+
+- Create an environment in Controller (out of scope)
+
+`ansible-playbook nginx_controller_certificate.yaml -e "@nginx_install_controller_vars.yaml" -e "controller_fqdn=<your controller fqdn here>"`
+
+- Creates a Certificate to later attach to a gateway
+
+`ansible-playbook nginx_controller_gateway.yaml -e "@nginx_install_controller_vars.yaml" -e "controller_fqdn=<your controller fqdn here>"`
+
+- Creates a gateway
+
+
+- Create an app (out of scope)
+
+`ansible-playbook nginx_controller_component.yaml -e "@nginx_install_controller_vars.yaml" -e "controller_fqdn=<your controller fqdn here>"`
+
+- Creates a component
+
+
+Supplemental: What are these files for?
+-----------------------------------------
 
 `nginx-plus-api.conf` and `stub_status.conf` | these fully enable all nginx metrics in Controller for the instance
 

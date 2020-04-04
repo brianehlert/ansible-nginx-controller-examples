@@ -1,0 +1,5 @@
+---
+  collections:
+    # Install a collection from Ansible Galaxy.
+    - name: nginxinc.nginx_controller
+   

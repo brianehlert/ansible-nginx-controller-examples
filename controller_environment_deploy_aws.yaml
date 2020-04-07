@@ -329,7 +329,7 @@
     - name: Create controller machine instance
       ec2_instance:
         name: "nginx-controller-1"
-        instance_type: t3a.xlarge
+        instance_type: t3a.2xlarge
         security_group: controller-sg
         image_id: "{{image_id}}"
         volumes:

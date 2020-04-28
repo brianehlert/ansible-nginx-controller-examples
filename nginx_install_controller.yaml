@@ -280,14 +280,14 @@
 
   - name: set the controller public fqdn variable
     set_fact:
-      fqdn: "{{hostvars['localhost']['fqdn']}}"
+      nginx_controller_fqdn: "{{hostvars['localhost']['fqdn']}}"
 
   - name: set the dbserver private fqdn variable
     set_fact:
-      db_host: "{{hostvars['localhost']['dbserver']}}"
+      nginx_controller_db_host: "{{hostvars['localhost']['dbserver']}}"
 
   roles:
-    - ansible-role-nginx-controller-install
+    - nginxinc.nginx_controller_install
         
 # pull the install log
 - hosts: controller

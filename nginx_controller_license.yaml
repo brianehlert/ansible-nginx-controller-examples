@@ -7,7 +7,7 @@
     - nginx_install_controller_vars.yaml
   vars:
     # base64 encoded, one line, no line endings or carrage returns
-    nginx_controller_license: "{{ lookup('file', 'license/controller_license.base64.txt') }}"
+    nginx_controller_license: "{{ lookup('file', 'license/controller_license.txt') | b64encode }}"
 
   tasks:
   ## Generate Controller token

@@ -1,4 +1,4 @@
-# ansible-playbook nginx_controller_gateway.yaml -e "user_email=brian@example.com user_password=notsecure controller_fqdn=controller.example.local" 
+# ansible-playbook nginx_controller_gateway.yaml -e "nginx_controller_user_email=brian@example.com nginx_controller_user_password=notsecure nginx_controller_fqdn=controller.example.local" 
 # ansible-playbook nginx_controller_gateway.yaml -e "@nginx_controller_gateway_vars.yaml"
 
 - hosts: localhost
@@ -12,9 +12,9 @@
     include_role:
       name: nginxinc.nginx_controller_gateway
     vars:
-        controller_fqdn: "controller.example.local"
-        environmentName: "production-us-west"
-        gateway:
+        nginx_controller_fqdn: "controller.example.local"
+        nginx_controller_environmentName: "production-us-west"
+        nginx_controller_gateway:
           metadata:
             name: lending
             displayName: "Shared Public Lending BU Gateway"

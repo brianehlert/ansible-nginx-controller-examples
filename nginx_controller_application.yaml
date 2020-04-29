@@ -3,14 +3,16 @@
 
 - hosts: localhost
   gather_facts: no
+  collections:
+  - nginxinc.nginx_controller
 
   tasks:
   - include_role:
-      name: ansible_role_nginx_controller_generate_token
+      name: nginx_controller_generate_token
 
   - name: configure the component
     include_role:
-      name: ansible-role-nginx_controller_application
+      name: nginx_controller_application
     vars:
       nginx_controller_environmentName: "production-us-west"
       nginx_controller_app:

@@ -3,14 +3,16 @@
 
 - hosts: localhost
   gather_facts: no
+  collections:
+  - nginxinc.nginx_controller
 
   tasks:
   - include_role:
-      name: nginxinc.nginx_controller_generate_token
+      name: nginx_controller_generate_token
 
   - name: create the certificate object
     include_role:
-      name: nginxinc.nginx_controller_certificate
+      name: nginx_controller_certificate
     vars:
       nginx_controller_environmentName: "production-us-west"
       nginx_controller_certificate:

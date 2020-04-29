@@ -3,14 +3,16 @@
 
 - hosts: localhost
   gather_facts: no
+  collections:
+  - nginxinc.nginx_controller
 
   tasks:
   - include_role:
-      name: nginxinc.nginx_controller_generate_token
+      name: nginx_controller_generate_token
 
   - name: configure the component
     include_role:
-      name: nginxinc.nginx_controller_component
+      name: nginx_controller_component
     vars:
       nginx_controller_appName: "lending.acmefinancial.net"
       nginx_controller_environmentName: "production-us-west"

@@ -15,6 +15,6 @@
       nginx_controller_environmentName: "production-us-west"
       nginx_controller_app:
         metadata:
-          name: "trading.acmefinancial.net"
-          displayName: "Trading.ACMEFinancial.net"
-          description: "Core Trading Application"
+          name: "lending.acmefinancial.net"
+          displayName: "lending.ACMEFinancial.net"
+          description: "Core lending Application"

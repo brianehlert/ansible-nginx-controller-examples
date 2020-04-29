@@ -1,4 +1,4 @@
-# ansible-playbook nginx_controller_certificate.yaml -e "user_email=brian@itproctology.com user_password=36x4esg8 controller_fqdn=ip-10-1-10-25.us-east-2.compute.internal" 
+# ansible-playbook nginx_controller_certificate.yaml -e "nginx_controller_user_email=name@example.com nginx_controller_user_password=P@ssword nginx_controller_fqdn=ip.us-east-2.compute.internal" 
 # ansible-playbook nginx_controller_certificate.yaml -e "@nginx_install_controller_vars.yaml"
 
 - hosts: localhost
@@ -12,8 +12,8 @@
     include_role:
       name: nginxinc.nginx_controller_certificate
     vars:
-      environmentName: "production-us-west"
-      certificate:
+      nginx_controller_environmentName: "production-us-west"
+      nginx_controller_certificate:
         metadata:
           name:  "star.acmefinancial.net"
           displayName:  "Root WWW Cert"

@@ -122,7 +122,8 @@
       update_cache: yes
     vars:
       packages:
-      - docker-ce=5:18.09.9~3-0~ubuntu-bionic  # kubeadm version requirement
+      - docker-ce=5:18.09.9~3-0~ubuntu-bionic
+      - docker-ce-cli=5:18.09.9~3-0~ubuntu-bionic  # kubeadm version requirement
     # notify:
     #   - docker status
 

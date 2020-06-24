@@ -21,7 +21,7 @@ nginx_controller_admin_email: ""
 nginx_controller_admin_password: ''
 nginx_controller_self_signed_cert: true
 nginx_controller_overwrite_existing_configs: true
-anginx_controller_uto_install_docker: false
+nginx_controller_auto_install_docker: false
 controller_tarball: "controller-installer-2.9.0.tar.gz"
 
 ansible_python_interpreter: /usr/bin/python3

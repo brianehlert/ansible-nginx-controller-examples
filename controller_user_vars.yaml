@@ -1,20 +1,29 @@
 ---
 users:
-  -
-    email: "ken@acmefinancial.net"
-    firstname: "Ken"
-    lastname: "Bocchino"
-    password: "Admin123!@#"
-    roles: "admin"
-  -
-    email: "robert@acmefinancial.net"
-    firstname: "Robert"
-    lastname: "Teller"
-    password: "Admin123!@#"
-    roles: "admin"
-  -
-    email: "president@acmefinancial.net"
-    fristname: "president"
-    lastname: ""
-    password: "Admin123!@#"
-    roles: "guest"
+  - 
+    metadata:
+      name: "ken@acmefinancial.net"
+    desiredState:
+      firstName: "Ken"
+      lastName: "Bocchino"
+      password: "<secure password>"
+      roles:
+      - ref: "/platform/roles/user"
+  - 
+    metadata:
+      name: "robert@acmefinancial.net"
+    desiredState:
+      firstName: "Robert"
+      lastName: "Teller"
+      password: "<secure password>"
+      roles: 
+      - ref: "/platform/roles/admin"
+  - 
+    metadata:
+      name: "president@acmefinancial.net"
+    desiredState:
+      firstName: "president"
+      lastName: "frank"
+      password: "<secure password>"
+      roles:
+      - ref: "/platform/roles/guest"

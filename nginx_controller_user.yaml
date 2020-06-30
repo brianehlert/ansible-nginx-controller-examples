@@ -1,0 +1,43 @@
+---
+# ansible-playbook nginx_controller_user.yaml -i controller -e "nginx_controller_user_email=user@company.com nginx_controller_password=userPassword" 
+# add users to nginx Controller
+- hosts: localhost
+
+  tasks:
+    - name: Retrieve the NGINX Controller auth token
+      include_role:
+        name: nginxinc.nginx_controller_generate_token
+
+    # Define one user account
+    - name: Configure the user
+      include_role:
+        name: nginx_controller_user
+      vars:
+        nginx_controller_user:
+          metadata:
+            name: "george@itproctology.com"
+            displayName: "contractor george"
+            description: "the account of george"
+            tags:
+            - "contractors"
+          desiredState:
+            firstName: George
+            lastName: Jungle
+            password: "Apes ar3 cute"
+            roles:
+            - ref: "platform/roles/user"
+            # groups:  # 3.7 reference(s) to security Groups the user is a member of
+            # - ref:   
+
+    # # Define an array of user accounts
+    # - name: read the user array
+    #   include_vars:
+    #     file: "controller_user_vars.yaml"
+    #     name: users
+
+    # - name: Configure array of users
+    #   include_role:
+    #     name: nginxinc.nginx_controller_user
+    #   vars:
+    #     nginx_controller_user: "{{ item }}"
+    #   with_items: "{{ users.users }}"

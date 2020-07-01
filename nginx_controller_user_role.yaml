@@ -1,0 +1,47 @@
+---
+# ansible-playbook nginx_controller_user.yaml -i controller -e "nginx_controller_user_email=user@company.com nginx_controller_password=userPassword" 
+# add users to nginx Controller
+- hosts: localhost
+
+  tasks:
+    - name: Retrieve the NGINX Controller auth token
+      include_role:
+        name: nginxinc.nginx_controller_generate_token
+
+    # Define one user account
+    - name: Configure the user
+      include_role:
+        name: nginxinc.nginx_controller_user_role
+      vars:
+        nginx_controller_user_role:
+          metadata:
+            name: "lending-admin"
+            displayName: "Lending Admin Access"
+            description: "This role grants users Admin priv's to all Lending Environments"
+          desiredState:
+            permissions:
+            - 
+              path: "/services/environments/lending-prod"
+              access: "FULL"
+            -
+              path: "/services/environments/lending-dev"
+              access: "FULL"
+            -
+              path: "/services/environments/retail-prod"
+              access: "NONE"
+            -
+              path: "/services/environments/retail-dev"
+              access: "NONE"
+
+    # # Define an array of user accounts
+    # - name: read the user array
+    #   include_vars:
+    #     file: "nginx_controller_user_role_vars.yaml"
+    #     name: roles
+
+    # - name: Configure array of users
+    #   include_role:
+    #     name: nginxinc.nginx_controller_user_role
+    #   vars:
+    #     nginx_controller_user: "{{ item }}"
+    #   with_items: "{{ roles.roles }}"

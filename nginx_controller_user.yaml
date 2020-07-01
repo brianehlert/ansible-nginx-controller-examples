@@ -11,7 +11,7 @@
     # Define one user account
     - name: Configure the user
       include_role:
-        name: nginx_controller_user
+        name: nginxinc.nginx_controller_user
       vars:
         nginx_controller_user:
           metadata:
@@ -32,7 +32,7 @@
     # # Define an array of user accounts
     # - name: read the user array
     #   include_vars:
-    #     file: "controller_user_vars.yaml"
+    #     file: "nginx_controller_user_vars.yaml"
     #     name: users
 
     # - name: Configure array of users

@@ -1,0 +1,78 @@
+---
+roles:
+  - 
+    metadata:
+      name: "lending-admin"
+      displayName: "Lending Admin Access"
+      description: "This role grants users Admin priv's to all Lending Environments"
+    desiredState:
+      permissions:
+      - 
+        path: "/services/environments/lending-prod"
+        access: "FULL"
+      -
+        path: "/services/environments/lending-dev"
+        access: "FULL"
+      -
+        path: "/services/environments/retail-prod"
+        access: "NONE"
+      -
+        path: "/services/environments/retail-dev"
+        access: "NONE"
+  - 
+    metadata:
+      name: "retail-dev"
+      displayName: "Retail Developer Access"
+      description: "This role grants users Read priv's to all Retail Prod Environments and Full Access to Retail Dev Environments"
+    desiredState:
+      permissions:
+      - 
+        path: "/services/environments/lending-prod"
+        access: "NONE"
+      -
+        path: "/services/environments/lending-dev"
+        access: "NONE"
+      -
+        path: "/services/environments/retail-prod"
+        access: "READ"
+      -
+        path: "/services/environments/retail-dev"
+        access: "FULL"
+  - 
+    metadata:
+      name: "retail-admin"
+      displayName: "Retail Admin Access"
+      description: "This role grants users Admin priv's to all Retail Environments"
+    desiredState:
+      permissions:
+      - 
+        path: "/services/environments/lending-prod"
+        access: "NONE"
+      -
+        path: "/services/environments/lending-dev"
+        access: "NONE"
+      -
+        path: "/services/environments/retail-prod"
+        access: "FULL"
+      -
+        path: "/services/environments/retail-dev"
+        access: "FULL"
+  - 
+    metadata:
+      name: "lending-readonly"
+      displayName: "Lending Readonly Access"
+      description: "This role grants users Readonly priv's to all Lending Environments"
+    desiredState:
+      permissions:
+      - 
+        path: "/services/environments/lending-prod"
+        access: "READ"
+      -
+        path: "/services/environments/lending-dev"
+        access: "READ"
+      -
+        path: "/services/environments/retail-prod"
+        access: "NONE"
+      -
+        path: "/services/environments/retail-dev"
+        access: "NONE"

@@ -1,0 +1,30 @@
+---
+# ansible-playbook nginx_controller_integration.yaml -i controller -e "nginx_controller_user_email=user@company.com nginx_controller_password=userPassword" 
+# manage integrations in nginx Controller
+- hosts: localhost
+
+  tasks:
+    - name: Retrieve the NGINX Controller auth token
+      include_role:
+        name: nginxinc.nginx_controller_generate_token
+
+    # Define one user account
+    - name: Configure the integration
+      include_role:
+        name: nginxinc.nginx_controller_integration
+      vars:
+        nginx_controller_integration:
+          metadata:
+            name: "splunk-demo"
+            displayName: "Splunk Demo target"
+            description: "the endpoint and credential for the Splunk demo"
+            tags:
+            - "splunk"
+            - "demo"
+          desiredState:
+            type: "GENERIC_INTEGRATION"
+            endpointUri: "https://10.1.1.11:8088/services/collector"
+            credential:
+              type: "API_KEY"
+              apiKey: "3eaf1d34-2c2e-400a-be00-97e7a96b04f8"
+

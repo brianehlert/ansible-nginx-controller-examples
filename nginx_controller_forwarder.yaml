@@ -1,0 +1,32 @@
+---
+# ansible-playbook nginx_controller_forwarder.yaml -i controller -e "nginx_controller_user_email=user@company.com nginx_controller_password=userPassword" 
+# manage data forwarders in nginx Controller
+- hosts: localhost
+
+  tasks:
+    - name: Retrieve the NGINX Controller auth token
+      include_role:
+        name: nginxinc.nginx_controller_generate_token
+
+    # Define one user account
+    - name: Configure the forwarder
+      include_role:
+        name: nginxinc.nginx_controller_forwarder
+      vars:
+        nginx_controller_forwarder:
+          metadata:
+            name: "splunk-forwarder"
+            displayName: "Splunk Production Data Forwarder"
+            description: "Production data to the Splunk production injestor"
+            tags:
+            - "splunk"
+            - "production"
+          desiredState:
+            integrationRef:
+              ref: "/platform/integrations/splunk-demo"
+            streams:
+            -
+              inputDataType: "metrics"  
+              outputFormat: "splunk"
+              selector: ""
+

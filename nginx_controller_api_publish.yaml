@@ -1,0 +1,30 @@
+# to publish API definition versions
+---
+- hosts: localhost
+  gather_facts: no
+  collections:
+  - nginxinc.nginx_controller
+
+  tasks:
+  - include_role:
+      name: nginx_controller_generate_token
+
+  - include_role:
+      name: nginx_controller_publish_api
+    # vars:
+    #   nginx_controller_environment: "demo"
+    #   nginx_controller_application: "sports-results"
+    #   nginx_controller_publish_api:
+    #     metadata:
+    #       name: "f1-results-v1"
+    #       displayName:  "F-1 v1 API"
+    #       tags:
+    #       - cars
+    #       - fast
+    #     desiredState:
+    #       apiDefinitionVersionRef:  # the API definition version that is to be published
+    #         ref: "/services/api-definitions/f1-results/versions/v1"
+    #       gatewayRefs:  # an array of Gateways that will host the API
+    #       - ref: "/services/environments/{{ nginx_controller_environment }}/gateways/demo-api"
+
+

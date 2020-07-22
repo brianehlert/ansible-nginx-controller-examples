@@ -1,0 +1,24 @@
+---
+# ansible-playbook nginx_controller_api_definition.yaml -i controller -e "nginx_controller_user_email=user@company.com nginx_controller_password=userPassword" 
+# manage api definitions in nginx Controller
+- hosts: localhost
+
+  tasks:
+    - name: Retrieve the NGINX Controller auth token
+      include_role:
+        name: nginxinc.nginx_controller.nginx_controller_generate_token
+
+    - name: find the api spec files
+      find:
+        paths: "{{ playbook_dir }}"
+        patterns: 'api_*.json'
+      register: api_definitions
+
+    # Import each API specification
+    - include_role:
+        name: nginxinc.nginx_controller.nginx_controller_api_definition_import
+      vars:
+        nginx_controller_api_definition_version: "{{ (((item.path | basename).split('_'))[3]).split('.')[0] }}"
+        nginx_controller_api_definition_name: "{{ ((item.path | basename).split('_'))[2] }}"
+        nginx_controller_api_definition: "{{lookup('file', item.path ) }}"
+      with_items: "{{ api_definitions.files }}"

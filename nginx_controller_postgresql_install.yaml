@@ -5,9 +5,7 @@
 - hosts: dbserver
   remote_user: ubuntu
   become: true
-  become_method: sudo
-  vars_files:
-    - nginx_install_controller_vars.yaml
+  become_method: sudo 
 
   tasks:
   - name: "Working around apt bug"
@@ -39,16 +37,17 @@
       
   - name: "add postgresql repository"
     apt_repository:
-      repo: "deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main"
+      repo: "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main"
       state: present
       filename: postgresql
       update_cache: yes
 
-  # - name: "Upgrade all existing packages"
-  #   apt: 
-  #     update_cache: yes 
-  #     upgrade: yes
-  #     # cache_valid_time: 3600
+#  - name: "add postgresql repository"
+#    apt_repository:
+#      repo: "deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main"
+#      state: present
+#      filename: postgresql
+#      update_cache: yes
 
   - name: "Working around locale issue"
     apt:
@@ -67,8 +66,10 @@
       update_cache: yes
     vars:
       packages:
-        - postgresql-9.5 
-        - postgresql-contrib-9.5
+        - postgresql-12
+        - postgresql-contrib-12
+#        - postgresql-9.5 
+#        - postgresql-contrib-9.5
     tags: packages
 
   - name: Ensure the PostgreSQL service is running
@@ -127,43 +128,41 @@
       role_attr_flags: NOSUPERUSER,CREATEDB
       state: present
 
+  - name: find pg_hba.conf
+    become: true
+    become_user: postgres
+    postgresql_query:
+      db: postgres
+      query: SHOW hba_file
+    register: hba
+    until: (hba is defined)
+    retries: 5
+    delay: 2
+
+  - name: find postgresql.conf
+    become: true
+    become_user: postgres
+    postgresql_query:
+      db: postgres
+      query: SHOW config_file
+    register: pgconf
+    until: (pgconf is defined)
+    retries: 5
+    delay: 2
+
   - name: enable access from any source
     lineinfile:
-      dest: /etc/postgresql/9.5/main/pg_hba.conf
+      dest: "{{ hba.query_result[0].hba_file }}"
       line: host all all 0.0.0.0/0 md5
       insertafter: EOF
       state: present
 
-  # - name: postgre allowed
-  #   shell: cat /etc/postgresql/9.5/main/pg_hba.conf
-  #   register: hbaconf
-
-  # - debug:
-  #     var: hbaconf
-
   - name: enable any interface
     lineinfile:
-      dest: /etc/postgresql/9.5/main/postgresql.conf
+      dest: "{{ pgconf.query_result[0].config_file }}"
       line: listen_addresses='*'
       insertafter: EOF
       state: present
-
-  # - name: postgre conf
-  #   shell: cat /etc/postgresql/9.5/main/postgresql.conf
-  #   register: postgreconf
-
-  # - debug:
-  #     var: postgreconf
-
-  # - name: postgre listening
-  #   shell: netstat -nlt
-  #   register: postgrelisten
-
-  # - debug:
-  #     var: postgrelisten
-
-  # - name: tweak firewall
-  #   shell: ufw allow 5432/tcp
 
   - name: restart postgresql
     service:

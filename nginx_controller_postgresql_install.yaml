@@ -164,6 +164,13 @@
       insertafter: EOF
       state: present
 
+  - name: increase connection count
+    lineinfile:
+      dest: "{{ pgconf.query_result[0].config_file }}"
+      line: 'max_connections = 200'
+      regexp: 'max_connections'
+      state: present
+
   - name: restart postgresql
     service:
       name: postgresql

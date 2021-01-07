@@ -150,6 +150,8 @@
     retries: 5
     delay: 2
 
+# /etc/postgresql/9.5/main/postgresql.conf
+
   - name: enable access from any source
     lineinfile:
       dest: "{{ hba.query_result[0].hba_file }}"

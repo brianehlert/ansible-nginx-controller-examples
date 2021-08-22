@@ -13,7 +13,7 @@
   tasks:
   - name: load the vars
     include_vars: 
-      file: "{{playbook_dir}}/nginx_controller_embedded_install.yaml"
+      file: "{{playbook_dir}}/nginx_controller_embedded_install_vars.yaml"
 
   - name:  make sure all the prerequisites are present
     apt: 

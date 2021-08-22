@@ -1,0 +1,26 @@
+---
+su_password: 'admin@123!'
+nginx_controller_tarball: "/home/ubuntu/{{controller_tarball}}"
+nginx_controller_install_path: /home/ubuntu
+nginx_controller_remote_source: "true"
+nginx_controller_tsdb_volume_type: "local"
+nginx_controller_smtp_host: "localhost"
+nginx_controller_smtp_port: "25"
+nginx_controller_smtp_authentication: "false"
+nginx_controller_smtp_use_tls: false
+nginx_controller_noreply_address: "abc@txt.com"
+nginx_controller_fqdn: ""
+nginx_controller_organization_name: "test"
+nginx_controller_admin_firstname: "test"
+nginx_controller_admin_lastname: "admin"
+nginx_controller_admin_email: "abc@txt.com"
+nginx_controller_user_email: "abc@txt.com"
+nginx_controller_user_password: 'Testenv12#'
+nginx_controller_admin_password: 'Testenv12#'
+nginx_controller_self_signed_cert: true
+nginx_controller_overwrite_existing_configs: true
+nginx_controller_auto_install_docker: false
+nginx_controller_bundled_db: true
+controller_tarball: "controller-installer.tar.gz"
+
+ansible_python_interpreter: /usr/bin/python3

@@ -1,0 +1,87 @@
+---
+# ansible-playbook nginx_install_controller.yaml -i controller -e "su_password='K33p0ut'"
+## retreive dynamic settings information at the Ansible Controller
+
+## on the remote host
+- name: load vars and prereqs
+  hosts: controllers
+  remote_user: ubuntu
+  become: yes
+  become_method: sudo
+  gather_facts: yes
+
+  tasks:
+  - name: load the vars
+    include_vars: 
+      file: "{{playbook_dir}}/nginx_controller_embedded_install_vars.yaml"
+
+  - name:  make sure all the prerequisites are present
+    apt: 
+      name: "{{ packages }}"
+      state: present
+      update_cache: yes
+    vars:
+      packages:
+      - gettext
+      - bash
+      - gzip
+      - coreutils
+      - grep
+      - less
+      - sed
+      - tar
+      - jq
+      - socat
+      - conntrack
+      - ebtables
+      - python-pexpect  # to support ansible
+    tags: packages
+
+  # Supporting su requirement for Controller installer role
+  - name: set root password to support su for Controller installation with Ubuntu
+    user:
+      name: root
+      password: "{{ su_password | password_hash('sha512') }}"
+
+
+## changing security context on the remote host to su
+- name: install controller
+  remote_user: ubuntu
+  hosts: controllers
+  become: yes
+  become_user: ubuntu
+  become_method: su
+  gather_facts: false
+  collections:
+  - nginxinc.nginx_controller
+
+  pre_tasks:
+  - name: load the vars
+    include_vars: 
+      file: "{{playbook_dir}}/nginx_controller_embedded_install_vars.yaml"
+
+  - name: set the controller public fqdn variable
+    set_fact:
+      nginx_controller_fqdn: "{{nginx_controller_fqdn}}"
+
+  tasks:
+    - name: Print some db debug information 
+      debug: msg="Hello your DB details are - {{nginx_controller_bundled_db}}, {{nginx_controller_db_host}}, {{nginx_controller_configdb_volume_type}}"
+      
+    - name: initiate controller install role
+      import_role:
+        name: nginx_controller_install
+
+
+# pull the install log
+- hosts: controller
+  remote_user: ubuntu
+  become: yes
+  become_method: sudo
+  gather_facts: false
+
+  tasks:
+  - name: fetch the install log
+    fetch:
+      src: /var/log/nginx-controller/nginx-controller-install.log
+      dest: "{{playbook_dir}}/logs/"

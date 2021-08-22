@@ -36,6 +36,13 @@ note: all playbooks tested with Ubuntu 18.04 minimum AMI image
 - sets root password for su task (Ubuntu 18.04)
 - requires [nginx_install_controller_vars.yaml](nginx_install_controller_vars.yaml)
 
+`ansible-playbook nginx_controller_embedded_install.yaml -i controller -e "su_password='<your controller installation password here>'"`
+- installs nginx Controller with embedded DB
+- sets root password for su task of selected FQDN/IP machine
+- requires a inventory file with name 'controller' in same location
+- requires NGINX controller ansible galaxy installed (You can install by looking at collection folder requirements yaml file)
+- requires nginx_controller_embedded_install_vars.yaml
+
 `nginx_installer_controller_vars.yaml` | your Controller settings
 `nginx_install_controller.yaml` | installs nginx controller and pre-requisites
 
